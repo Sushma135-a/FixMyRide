@@ -1,0 +1,91 @@
+<div class="register-container">
+  <div class="left-section">
+    <div class="register-form-container">
+      <div class="logo-small">🚗</div>
+      <h2>Create Account</h2>
+
+      <form (ngSubmit)="submit()" class="register-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name*</label>
+            <input [(ngModel)]="user.fullName" name="firstName" type="text" required
+                   placeholder="Enter first name" />
+          </div>
+
+          <div class="form-group">
+            <label>Last Name*</label>
+            <input [(ngModel)]="user.lastName" name="lastName" type="text" required
+                   placeholder="Enter last name" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address*</label>
+          <input [(ngModel)]="user.email" name="email" type="email" required
+                 placeholder="Enter your email" />
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number*</label>
+          <input
+            [(ngModel)]="user.phone"
+            name="phone"
+            type="tel"
+            required
+            pattern="[6-9][0-9]{9}"
+            minlength="10"
+            maxlength="10"
+            placeholder="Enter your phone number" />
+        </div>
+
+        <div class="form-group">
+          <label>Password*</label>
+          <div class="password-input">
+            <input [(ngModel)]="user.password" name="password" type="password" required
+                   placeholder="Enter your password" />
+            <span class="eye-icon">👁</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password*</label>
+          <div class="password-input">
+            <input [(ngModel)]="confirmPassword" name="confirmPassword" type="password" required
+                   placeholder="Confirm your password" />
+            <span class="eye-icon">👁</span>
+          </div>
+        </div>
+
+        <div class="remember-me">
+          <input type="checkbox" id="remember" />
+          <label for="remember">Remember Me</label>
+        </div>
+
+        <div *ngIf="error" class="error-message">
+          {{ error }}
+        </div>
+        <div *ngIf="success" class="success-message">
+          {{ success }}
+        </div>
+
+        <button type="submit" class="btn-register">CREATE ACCOUNT</button>
+
+        <div class="userlogin-link">
+          Already have an Account? <a routerLink="/userlogin">Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="right-section">
+
+
+
+    <div class="logo-section">
+      <div class="logo">🚗</div>
+      <h1>FixMyRide</h1>
+      <p>Your Trusted Partner for Car Care Solutions!</p>
+    </div>
+  </div>
+</div>
+
