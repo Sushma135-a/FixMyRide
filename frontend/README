@@ -1,0 +1,14 @@
+# FixMyRide Frontend
+
+This folder contains the Angular frontend for the FixMyRide car service booking application.
+
+## Technologies
+- Angular
+- TypeScript
+- HTML and CSS
+
+## Setup
+1. Install Node.js and npm.
+2. Install the project dependencies using `npm install`.
+3. Start the Angular development server using `ng serve`.
+
