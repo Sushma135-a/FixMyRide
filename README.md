@@ -1,6 +1,6 @@
 # FixMyRide – Car Service Booking System
 
-FixMyRide is a full-stack web application designed to help users access and book vehicle servicing through an online platform. The application uses Angular for the frontend and Spring Boot for the backend.
+FixMyRide is a full-stack web application that helps users book vehicle servicing online. It uses Angular for the frontend and Spring Boot for the backend.
 
 ## Features
 
@@ -9,37 +9,26 @@ FixMyRide is a full-stack web application designed to help users access and book
 - Service and booking management
 - REST API integration between frontend and backend
 
-*Note: Confirm that each feature is implemented and working in your current version before presenting it as a completed feature.*
+*Only describe features that are implemented and working in your current application.*
 
 ## Technologies Used
 
-**Frontend**
-- Angular
-- TypeScript
-- HTML
-- CSS
+**Frontend:** Angular, TypeScript, HTML, CSS
 
-**Backend**
-- Java
-- Spring Boot
-- Spring Data JPA
-- REST APIs
+**Backend:** Java, Spring Boot, Spring Data JPA, REST APIs
 
-**Database**
-- MySQL
+**Database:** MySQL
 
 ## Project Structure
 
 ```text
 FixMyRide/
-├── frontend/     # Angular application
-├── backend/      # Spring Boot application
+├── frontend/    # Angular frontend application
+├── backend/     # Spring Boot backend application
 └── README.md
 ```
 
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Node.js and npm
 - Angular CLI compatible with the project
@@ -47,54 +36,45 @@ FixMyRide/
 - Maven
 - MySQL
 
-### Run the Frontend
+## How to Run the Frontend
 
-1. Open a terminal.
-2. Navigate to the frontend folder:
+Open a terminal in the project folder and run:
 
-   ```bash
-   cd frontend
-   ```
+```bash
+cd frontend
+npm install
+npm start
+```
 
-3. Install dependencies:
+## How to Run the Backend
 
-   ```bash
-   npm install
-   ```
+Ensure MySQL is running and your database connection settings are configured.
 
-4. Start the application:
+Set the database environment variables in PowerShell:
 
-   ```bash
-   npm start
-   ```
+```powershell
+$env:DB_USERNAME = "root"
+$env:DB_PASSWORD = Read-Host "Enter your MySQL password"
+```
 
-### Run the Backend
+Then open a separate terminal and run:
 
-1. Configure your MySQL database and connection settings.
-2. Set the `DB_USERNAME` and `DB_PASSWORD` environment variables.
-3. Open a separate terminal and navigate to the backend folder:
+```powershell
+cd backend
+mvn spring-boot:run
+```
 
-   ```bash
-   cd backend
-   ```
-
-4. Start the Spring Boot application using Maven:
-
-   ```bash
-   mvn spring-boot:run
-   ```
-
-Make sure your database is running and your backend configuration matches your local environment.
+Keep the backend terminal open while using the application. Configure the frontend API URL or proxy to match the backend settings.
 
 ## Future Improvements
 
-- Improve form validation and error handling
+- Improve validation and error handling
 - Add automated tests
-- Enhance the user interface and responsiveness
+- Enhance responsive design and accessibility
 
 ## Author
 
 **Sushma H M**
 
-- GitHub: [Sushma135-a](https://github.com/Sushma135-a)
-- LinkedIn: [Sushma H M](https://www.linkedin.com/in/sushmahm041)
+- GitHub: https://github.com/Sushma135-a
+- LinkedIn: https.linkedin.com/in/sushma-h-m-306b8532a
