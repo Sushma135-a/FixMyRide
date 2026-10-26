@@ -77,4 +77,4 @@ Keep the backend terminal open while using the application. Configure the fronte
 **Sushma H M**
 
 - GitHub: https://github.com/Sushma135-a
-- LinkedIn: https.linkedin.com/in/sushma-h-m-306b8532a
+- LinkedIn: https://linkedin.com/in/sushma-h-m-306b8532a
