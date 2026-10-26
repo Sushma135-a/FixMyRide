@@ -1,3 +1,4 @@
+
 package com.example.demo.controller;
 
 import com.example.demo.model.Booking;
@@ -14,10 +15,14 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    public BookingController(BookingService bookingService) { this.bookingService = bookingService; }
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
 
     @PostMapping("/user/{userId}")
-    public Booking createBooking(@PathVariable Long userId, @Valid @RequestBody Booking booking) {
+    public Booking createBooking(
+            @PathVariable Long userId,
+            @Valid @RequestBody Booking booking) {
         return bookingService.createBooking(booking, userId);
     }
 
@@ -32,7 +37,9 @@ public class BookingController {
     }
 
     @PutMapping("/{bookingId}/status")
-    public Booking updateStatus(@PathVariable Long bookingId, @RequestParam String status) {
+    public Booking updateStatus(
+            @PathVariable Long bookingId,
+            @RequestParam String status) {
         return bookingService.updateStatus(bookingId, status);
     }
 }
