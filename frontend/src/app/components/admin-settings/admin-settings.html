@@ -1,0 +1,30 @@
+<div class="settings-page">
+  <h2>Settings</h2>
+  <p class="subtitle">Manage your dashboard preferences.</p>
+
+  <div class="settings-card">
+    <label class="setting-row">
+      <span>
+        <strong>Email notifications</strong>
+        <small>Enable notification preferences.</small>
+      </span>
+      <input type="checkbox" [(ngModel)]="emailNotifications">
+    </label>
+
+    <label class="setting-row">
+      <span>
+        <strong>Compact view</strong>
+        <small>Preference for a more compact dashboard.</small>
+      </span>
+      <input type="checkbox" [(ngModel)]="compactView">
+    </label>
+
+    <button class="save-btn" (click)="saveSettings()">
+      Save Settings
+    </button>
+  </div>
+
+  <button class="back-btn" routerLink="/admin">
+    Back to Dashboard
+  </button>
+</div>

@@ -19,6 +19,7 @@ import { Admin } from '../../model/admin';
 export class Admincomp implements OnInit {
   activeTab: string = 'dashboard';
   darkMode: boolean = false;
+  profileMenuOpen = false;
 
   // Dashboard stats
   totalBookings: number = 0;
@@ -303,6 +304,13 @@ export class Admincomp implements OnInit {
       this.showNotification = false;
     }, 3000);
   }
+  toggleProfileMenu() {
+  this.profileMenuOpen = !this.profileMenuOpen;
+}
+
+closeProfileMenu() {
+  this.profileMenuOpen = false;
+}
 
   toggleDarkMode() {
     this.darkMode = !this.darkMode;

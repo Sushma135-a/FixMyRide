@@ -63,20 +63,21 @@
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "fixmyridefrontend1:build:production",
-              "proxyConfig": "proxy.conf.json"
-            },
-            "development": {
-              "buildTarget": "fixmyridefrontend1:build:development",
-              "proxyConfig": "proxy.conf.json"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
+      "serve": {
+  "builder": "@angular/build:dev-server",
+  "options": {
+    "proxyConfig": "proxy.conf.json"
+  },
+  "configurations": {
+    "production": {
+      "buildTarget": "fixmyridefrontend1:build:production"
+    },
+    "development": {
+      "buildTarget": "fixmyridefrontend1:build:development"
+    }
+  },
+  "defaultConfiguration": "development"
+},
         "test": {
           "builder": "@angular/build:unit-test"
         }

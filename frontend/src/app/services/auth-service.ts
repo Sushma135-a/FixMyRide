@@ -10,7 +10,6 @@ export class AuthService {
   // Backend AuthController is currently mapped under /api/users.
   private baseUrl = '/api/users';
   private adminUrl = '/api/admin';
-  private userUrl = '/api/user';
 
   constructor(private http: HttpClient) {}
 

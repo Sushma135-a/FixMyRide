@@ -47,14 +47,6 @@ export class Userlogin {
         },
           error: (err) => {
             console.error('User login error:', err);
-            // Fallback for local testing: allow known test user to login when backend unavailable
-            if (this.email === 'sushma' && this.password === 'Sushma@12') {
-              const testUser = { email: this.email, fullName: 'Sushma' };
-              localStorage.setItem('user', JSON.stringify(testUser));
-              alert('Login Successful (local fallback)');
-              this.router.navigateByUrl('/user');
-              return;
-            }
             this.error = 'Invalid email or password';
           }
       });

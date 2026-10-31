@@ -12,7 +12,9 @@ import { Admincomp } from './components/admincomp/admincomp';
 import { Userlogincmp } from './components/userlogincmp/userlogincmp';
 import { HttpClientModule } from '@angular/common/http';
 import { Userlogin } from './components/userlogin/userlogin';
-
+import { AdminDetails } from './components/admin-details/admin-details';
+import { AdminSettings } from './components/admin-settings/admin-settings';
+import { AdminSecurity } from './components/admin-security/admin-security';
 @NgModule({
   declarations: [
     App,
@@ -20,7 +22,10 @@ import { Userlogin } from './components/userlogin/userlogin';
     Register,
     Admincomp,
     Userlogincmp,
-    Userlogin
+    Userlogin,
+      AdminDetails,
+    AdminSettings,
+    AdminSecurity
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,3 @@
-<p>FixMyRide</p>
 <div class="admin-container">
   <!-- Header -->
   <header class="admin-header">
@@ -6,17 +5,55 @@
       <div class="logo">SPL</div>
     </div>
     <div class="header-right">
-      <button class="header-btn" routerLink="/admin">Admin Dashboard</button>
-      <button class="header-btn">Profile</button>
-      <span class="icon">🔔</span>
-      <label class="dark-toggle">
-        <input type="checkbox" [checked]="darkMode" (change)="toggleDarkMode()" />
-        <span>DARK</span>
-      </label>
-      <span class="user-name">Admin User</span>
-      <button class="logout-btn" (click)="logout()">Log Out →</button>
+  <div class="profile-dropdown">
+    <button
+      class="header-btn"
+      type="button"
+      (click)="toggleProfileMenu()"
+      [attr.aria-expanded]="profileMenuOpen">
+      Profile
+      <span>{{ profileMenuOpen ? '▲' : '▼' }}</span>
+    </button>
+
+    <div class="profile-menu" *ngIf="profileMenuOpen">
+      <button type="button" routerLink="/admin/details"
+        (click)="closeProfileMenu()">
+        <span>👤</span>
+        <span>
+          <strong>Admin Details</strong>
+          <small>View administrator information</small>
+        </span>
+      </button>
+
+      <button type="button" routerLink="/admin/settings"
+        (click)="closeProfileMenu()">
+        <span>⚙️</span>
+        <span>
+          <strong>Settings</strong>
+          <small>Manage dashboard preferences</small>
+        </span>
+      </button>
+
+      <button type="button" routerLink="/admin/security"
+        (click)="closeProfileMenu()">
+        <span>🛡️</span>
+        <span>
+          <strong>Privacy &amp; Security</strong>
+          <small>Manage account security</small>
+        </span>
+      </button>
+
+      <div class="menu-divider"></div>
+
+      <button type="button" class="dropdown-logout"
+        (click)="logout()">
+        <span>↪</span>
+        <strong>Logout</strong>
+      </button>
     </div>
-  </header>
+  </div>
+</div>
+</header>
 
   <!-- Notification -->
   <div *ngIf="showNotification" class="notification">
@@ -228,10 +265,8 @@
         <div *ngFor="let feedback of feedbacks" class="feedback-card">
           <div class="feedback-header">
             <h3>{{ feedback.userName }}</h3>
-            <span class="feedback-rating">
-              <span *ngFor="let star of [1,2,3,4,5]"
-                    [class.filled]="star <= feedback.rating">★</span>
-            </span>
+            <span *ngFor="let star of [1,2,3,4,5]"
+                  [class.filled]="star <= feedback.rating">★</span>
           </div>
           <p class="feedback-category">{{ feedback.category }}</p>
           <p class="feedback-comments">{{ feedback.comments }}</p>

@@ -1,23 +1,30 @@
 <div class="user-container">
   <!-- Header -->
-  <header class="user-header">
-    <div class="header-left">
-      <div class="logo">SPL</div>
-    </div>
-    <div class="header-right">
-      <button class="header-btn">Profile</button>
-      <button class="header-btn feedback-btn" (click)="openFeedbackModal()">
-        <span>💬</span> Feedback
-      </button>
-      <span class="icon">🔔</span>
-      <label class="dark-toggle">
-        <input type="checkbox" [checked]="darkMode" (change)="toggleDarkMode()" />
-        <span>DARK</span>
-      </label>
-      <span class="user-name">{{ currentUser?.fullName }} {{ currentUser?.lastName }}</span>
-      <button class="logout-btn" (click)="logout()">Log Out →</button>
-    </div>
-  </header>
+<header class="user-header">
+  <div class="header-left"></div>
+
+  <div class="header-right">
+   <div class="profile-dropdown">
+  <button class="header-btn"
+          (click)="showProfileMenu = !showProfileMenu">
+    Profile ▼
+  </button>
+
+ <div class="profile-menu" *ngIf="showProfileMenu">
+  <button type="button" class="dropdown-logout"
+          (click)="logout(); showProfileMenu = false">
+    <span>↪</span>
+    <strong>Logout</strong>
+  </button>
+</div>
+</div>
+
+    <button class="header-btn feedback-btn"
+            (click)="openFeedbackModal()">
+      💬 Feedback
+    </button>
+  </div>
+</header>
 
   <!-- Notification -->
   <div *ngIf="showNotification" class="notification">
@@ -86,10 +93,10 @@
               <!-- Prefer backend serviceDate, fallback to frontend serviceBookingDate -->
               <td>{{ (booking.serviceDate || booking.serviceBookingDate) | date:'short' }} {{ booking.timeSlot }}</td>
               <td>
-                <span class="status-badge" [class]="'status-' + booking.status.toLowerCase().replace(' ', '-')">
-                  {{ booking.status }}
-                </span>
-              </td>
+  <span class="status-badge" [class]="'status-' + booking.status.toLowerCase().replace(' ', '-')">
+    {{ booking.status }}
+  </span>
+</td>
               <td>₹{{ (booking.totalAmount || 0).toFixed(2) }}</td>
             </tr>
             <tr *ngIf="filteredBookings.length === 0">

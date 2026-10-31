@@ -24,7 +24,7 @@ export class Userlogincmp implements OnInit, OnDestroy {
   activeView: string = 'dashboard';
   darkMode: boolean = false;
   showFeedbackModal: boolean = false;
-
+  showProfileMenu: boolean = false;
   // User info
   currentUser: user | null = null;
 
@@ -182,8 +182,46 @@ export class Userlogincmp implements OnInit, OnDestroy {
       this.loadUserBookings();
     }, 10000);
   }
+  getBookingStatus(booking: Booking): string {
+  return String(
+    (booking as any).bookingStatus ?? booking.status ?? 'PENDING'
+  )
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+}
 
-  filterBookings() {
+getBookingStatusLabel(status: string): string {
+  const labels: { [key: string]: string } = {
+    PENDING: 'Booking Submitted',
+    ACCEPTED: 'Confirmed',
+    CONFIRMED: 'Confirmed',
+    IN_PROGRESS: 'Service In Progress',
+    COMPLETED: 'Completed',
+    CANCELLED: 'Cancelled',
+    REJECTED: 'Rejected'
+  };
+
+  return labels[status] || status.replace(/_/g, ' ');
+}
+
+getBookingProgress(status: string): number {
+  const progress: { [key: string]: number } = {
+    PENDING: 1,
+    ACCEPTED: 2,
+    CONFIRMED: 2,
+    IN_PROGRESS: 3,
+    COMPLETED: 4
+  };
+
+  return progress[status] || 0;
+}
+
+isBookingStepComplete(status: string, step: number): boolean {
+  return this.getBookingProgress(status) >= step;
+}
+  filterBookings()
+   {
     this.filteredBookings = this.userBookings.filter(booking => {
       const serviceName = booking.serviceType || booking.selectedServices || '';
       const matchesService = this.selectedServiceFilter === 'All Services' ||

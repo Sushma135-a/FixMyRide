@@ -62,9 +62,11 @@ error = '';
 
     this.authService.register(this.user).subscribe({
       next: () => {
-        this.success = 'Registered successfully!';
-        console.log('Registration successful');
-      },
+  this.success = 'Registered successfully!';
+  console.log('Registration successful');
+
+  this.router.navigate(['/login']);
+},
       error: (err) => {
         console.error('Registration error:', err);
         let errorMessage = 'Registration failed. Please try again.';

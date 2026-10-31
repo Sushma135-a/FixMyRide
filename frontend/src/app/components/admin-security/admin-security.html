@@ -1,0 +1,39 @@
+<div class="settings-page">
+  <h2>Privacy &amp; Security</h2>
+  <p class="subtitle">Manage your account security.</p>
+
+  <div class="settings-card">
+    <h3>Change Password</h3>
+
+    <form (ngSubmit)="changePassword()">
+      <label>Current Password</label>
+      <input
+        type="password"
+        name="currentPassword"
+        [(ngModel)]="currentPassword"
+        required>
+
+      <label>New Password</label>
+      <input
+        type="password"
+        name="newPassword"
+        [(ngModel)]="newPassword"
+        required>
+
+      <label>Confirm New Password</label>
+      <input
+        type="password"
+        name="confirmPassword"
+        [(ngModel)]="confirmPassword"
+        required>
+
+      <button class="save-btn" type="submit">
+        Validate Password Change
+      </button>
+    </form>
+  </div>
+
+  <button class="back-btn" routerLink="/admin">
+    Back to Dashboard
+  </button>
+</div>
