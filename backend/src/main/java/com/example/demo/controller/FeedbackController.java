@@ -1,3 +1,4 @@
+
 package com.example.demo.controller;
 
 import com.example.demo.model.Feedback;
@@ -14,15 +15,24 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    public FeedbackController(FeedbackService feedbackService) { this.feedbackService = feedbackService; }
+    public FeedbackController(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
 
     @PostMapping("/user/{userId}")
-    public Feedback createFeedback(@PathVariable Long userId, @Valid @RequestBody Feedback feedback) {
+    public Feedback createFeedback(
+            @PathVariable Long userId,
+            @Valid @RequestBody Feedback feedback) {
         return feedbackService.createFeedback(feedback, userId);
     }
 
     @GetMapping("/admin/all")
     public List<Feedback> getAllFeedback() {
         return feedbackService.getAllFeedback();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFeedback(@PathVariable Long id) {
+        feedbackService.deleteFeedback(id);
     }
 }

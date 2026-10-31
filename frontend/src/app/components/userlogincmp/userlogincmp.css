@@ -823,3 +823,20 @@ body.dark-mode .modal-header {
 .dropdown-logout strong {
   font-weight: 600;
 }
+.user-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-welcome h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.user-welcome p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}

@@ -1,3 +1,4 @@
+
 export class Feedback {
   id!: string;
   userId!: string;
@@ -6,6 +7,12 @@ export class Feedback {
   category!: string;
   comments!: string;
   createdAt!: Date;
+
+  user?: {
+    id: number;
+    fullName: string;
+    email: string;
+  };
 }
 
 export const FeedbackCategories = [

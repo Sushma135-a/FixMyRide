@@ -6,11 +6,11 @@
 
 .left-section {
   flex: 1;
-  background: #de3b3b;
+  background: #5b5888;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5rem;
+  padding: 6rem;
   overflow-y: auto;
 }
 

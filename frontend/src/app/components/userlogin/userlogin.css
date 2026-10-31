@@ -22,14 +22,14 @@
 .logo-section .logo {
   width: 60px;
   height: 60px;
-  background: pink;
+  background: rgb(192, 192, 255);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   font-weight: bold;
-  color: #1e3a8a;
+  color: #8995b7;
   margin-bottom: 1rem;
 }
 
@@ -47,7 +47,7 @@
 
 .right-section {
   flex: 1;
-  background: pink;
+  background: rgb(192, 192, 255);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,3 +1,4 @@
+
 package com.example.demo.serviceimpl;
 
 import com.example.demo.exception.ResourceNotFoundException;
@@ -16,7 +17,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
 
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, UserRepository userRepository) {
+    public FeedbackServiceImpl(
+            FeedbackRepository feedbackRepository,
+            UserRepository userRepository) {
         this.feedbackRepository = feedbackRepository;
         this.userRepository = userRepository;
     }
@@ -24,7 +27,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Feedback createFeedback(Feedback feedback, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + userId));
+
         feedback.setUser(user);
         return feedbackRepository.save(feedback);
     }
@@ -32,5 +37,14 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public List<Feedback> getAllFeedback() {
         return feedbackRepository.findAll();
+    }
+
+    @Override
+    public void deleteFeedback(Long id) {
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Feedback not found with id: " + id));
+
+        feedbackRepository.delete(feedback);
     }
 }

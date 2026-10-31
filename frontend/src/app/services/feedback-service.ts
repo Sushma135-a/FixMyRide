@@ -11,9 +11,12 @@ export class FeedbackService {
 
   constructor(private http: HttpClient) {}
 
-  submitFeedback(feedback: Feedback): Observable<Feedback> {
-    return this.http.post<Feedback>(this.baseUrl, feedback);
-  }
+  submitFeedback(feedback: Feedback, userId: string): Observable<Feedback> {
+  return this.http.post<Feedback>(
+    `${this.baseUrl}/user/${userId}`,
+    feedback
+  );
+}
 
   getAllFeedback(): Observable<Feedback[]> {
     return this.http.get<Feedback[]>(`${this.baseUrl}/admin/all`);
@@ -23,8 +26,8 @@ export class FeedbackService {
     return this.http.get<Feedback[]>(`${this.baseUrl}/user/${userId}`);
   }
 
-  deleteFeedback(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  }
+deleteFeedback(id: string): Observable<void> {
+  return this.http.delete<void>(`${this.baseUrl}/${id}`);
+}
 }
 

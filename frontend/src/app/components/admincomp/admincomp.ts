@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { Booking } from '../../model/booking';
 import { user } from '../../model/user';
 import { Feedback } from '../../model/feedback';
-import { OnInit } from '@angular/core';
+import { Admin } from '../../model/admin';
+
 import { BookingService } from '../../services/booking-service';
 import { UserService } from '../../services/user-service';
 import { FeedbackService } from '../../services/feedback-service';
 import { AuthService } from '../../services/auth-service';
-import { Admin } from '../../model/admin';
-
 @Component({
   selector: 'app-admincomp',
   standalone: false,
@@ -285,17 +285,17 @@ export class Admincomp implements OnInit {
     }
   }
 
-  deleteFeedback(feedbackId: string) {
-    if (confirm('Are you sure you want to delete this feedback?')) {
-      this.feedbackService.deleteFeedback(feedbackId).subscribe({
-        next: () => {
-          this.showNotificationMessage('Feedback deleted successfully.');
-          this.loadDashboardData();
-        },
-        error: (err) => console.error('Error deleting feedback:', err)
-      });
-    }
+deleteFeedback(feedbackId: string) {
+  if (confirm('Are you sure you want to delete this feedback?')) {
+    this.feedbackService.deleteFeedback(feedbackId).subscribe({
+      next: () => {
+        this.showNotificationMessage('Feedback deleted successfully.');
+        this.loadDashboardData();
+      },
+      error: (err) => console.error('Error deleting feedback:', err)
+    });
   }
+}
 
   showNotificationMessage(message: string) {
     this.notificationMessage = message;

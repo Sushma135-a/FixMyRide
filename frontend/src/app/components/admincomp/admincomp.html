@@ -256,29 +256,41 @@
         <div *ngIf="users.length === 0" class="empty-state">No users found</div>
       </div>
     </div>
+<!-- Feedback Tab -->
+<div *ngIf="activeTab === 'feedback'" class="feedback-tab">
+  <h1 class="page-title">Feedback Management</h1>
 
-    <!-- Feedback Tab -->
-    <div *ngIf="activeTab === 'feedback'" class="feedback-tab">
-      <h1 class="page-title">Feedback Management</h1>
+  <div class="feedback-list">
+    <div *ngFor="let feedback of feedbacks" class="feedback-card">
 
-      <div class="feedback-list">
-        <div *ngFor="let feedback of feedbacks" class="feedback-card">
-          <div class="feedback-header">
-            <h3>{{ feedback.userName }}</h3>
-            <span *ngFor="let star of [1,2,3,4,5]"
-                  [class.filled]="star <= feedback.rating">★</span>
-          </div>
-          <p class="feedback-category">{{ feedback.category }}</p>
-          <p class="feedback-comments">{{ feedback.comments }}</p>
-          <div class="feedback-footer">
-            <span>{{ feedback.createdAt | date:'short' }}</span>
-            <button (click)="deleteFeedback(feedback.id)" class="btn-delete">Delete</button>
-          </div>
-        </div>
-        <div *ngIf="feedbacks.length === 0" class="empty-state">No feedback found</div>
+      <div class="feedback-header">
+        <h3>{{ feedback.user?.fullName || 'Unknown User' }}</h3>
+
+        <span *ngFor="let star of [1,2,3,4,5]"
+              [class.filled]="star <= feedback.rating">★</span>
       </div>
+
+      <p class="feedback-email">
+        {{ feedback.user?.email || 'Email not available' }}
+      </p>
+
+      <p class="feedback-comments">
+        {{ feedback.comments || 'No comments provided' }}
+      </p>
+
+      <div class="feedback-footer">
+        <span>{{ feedback.createdAt | date:'short' }}</span>
+        <button (click)="deleteFeedback(feedback.id)"
+                class="btn-delete">Delete</button>
+      </div>
+
     </div>
 
+    <div *ngIf="feedbacks.length === 0" class="empty-state">
+      No feedback found
+    </div>
+  </div>
+</div>
     <!-- Slot Management Tab -->
     <div *ngIf="activeTab === 'slots'" class="slots-tab">
       <h1 class="page-title">Slot Management</h1>

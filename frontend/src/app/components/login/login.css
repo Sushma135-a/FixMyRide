@@ -47,7 +47,7 @@
 
 .right-section {
   flex: 1;
-  background: white;
+  background: rgb(152, 136, 185);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,7 +1,12 @@
 <div class="user-container">
   <!-- Header -->
 <header class="user-header">
-  <div class="header-left"></div>
+  <div class="header-left" *ngIf="currentUser">
+  <div class="user-welcome">
+<h2>Welcome, {{ currentUser.fullName }}!</h2>
+<p>{{ currentUser.email }}</p>
+  </div>
+</div>
 
   <div class="header-right">
    <div class="profile-dropdown">
@@ -9,7 +14,7 @@
           (click)="showProfileMenu = !showProfileMenu">
     Profile ▼
   </button>
-
+ <div class="menu-divider"></div>
  <div class="profile-menu" *ngIf="showProfileMenu">
   <button type="button" class="dropdown-logout"
           (click)="logout(); showProfileMenu = false">

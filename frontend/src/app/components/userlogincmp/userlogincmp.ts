@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BookingService } from '../../services/booking-service';
 import { FeedbackService } from '../../services/feedback-service';
@@ -7,12 +8,7 @@ import { Booking } from '../../model/booking';
 import { user } from '../../model/user';
 import { Feedback } from '../../model/feedback';
 import { SERVICE_OPTIONS } from '../../model/service';
-import { OnInit } from '@angular/core';
-import { TimeSlot } from '../../model/slot';
-import { DEFAULT_TIME_SLOTS } from '../../model/slot';
-
-
-
+import { TimeSlot, DEFAULT_TIME_SLOTS } from '../../model/slot';
 
 @Component({
   selector: 'app-userlogincmp',
@@ -25,6 +21,7 @@ export class Userlogincmp implements OnInit, OnDestroy {
   darkMode: boolean = false;
   showFeedbackModal: boolean = false;
   showProfileMenu: boolean = false;
+
   // User info
   currentUser: user | null = null;
 
@@ -45,15 +42,23 @@ export class Userlogincmp implements OnInit, OnDestroy {
 
   // Feedback
   feedback: Feedback = new Feedback();
-  feedbackCategories = ['Service Quality', 'Staff Behavior', 'Pricing', 'Timeliness', 'Facility', 'Other'];
+  feedbackCategories = [
+    'Service Quality',
+    'Staff Behavior',
+    'Pricing',
+    'Timeliness',
+    'Facility',
+    'Other'
+  ];
 
   // Notification
   notificationMessage: string = '';
   showNotification: boolean = false;
+
   // Booking success modal
   showBookingSuccessModal: boolean = false;
 
-  // Interval id for auto-refreshing bookings when admin updates status
+  // Interval id for auto-refreshing bookings
   private bookingsPollIntervalId: any;
 
   constructor(
@@ -65,36 +70,46 @@ export class Userlogincmp implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const userStr = localStorage.getItem('user');
+
     if (userStr) {
       this.currentUser = JSON.parse(userStr);
     } else {
       const adminStr = localStorage.getItem('admin');
+
       if (adminStr) {
         this.router.navigateByUrl('/admin');
         return;
       }
+
       this.router.navigateByUrl('/userlogin');
       return;
     }
 
-    // Load bookings and initialize form
     this.loadUserBookings();
     this.startBookingsPolling();
     this.initializeBooking();
 
-    // Set minimum date to today
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
   }
 
   ngOnDestroy(): void {
-    // Clear polling interval when component is destroyed
     if (this.bookingsPollIntervalId) {
       clearInterval(this.bookingsPollIntervalId);
     }
   }
 
-  initializeBooking() {
+  // Notification method
+  showNotificationMessage(message: string): void {
+    this.notificationMessage = message;
+    this.showNotification = true;
+
+    setTimeout(() => {
+      this.showNotification = false;
+    }, 3000);
+  }
+
+  initializeBooking(): void {
     this.booking = {
       id: '',
       customerName: this.currentUser?.fullName || '',
@@ -116,51 +131,49 @@ export class Userlogincmp implements OnInit, OnDestroy {
       userId: this.currentUser?.id?.toString() || ''
     };
 
-    // Set default date to today
     const today = new Date();
     this.selectedDate = today.toISOString().split('T')[0];
 
-    // Initialize time slots with availableSlots
     this.loadAvailableSlots();
   }
 
-  loadUserBookings() {
+  loadUserBookings(): void {
     if (this.currentUser?.id) {
       this.bookingService.getUserBookings(this.currentUser.id).subscribe({
         next: (bookings) => {
-          // Normalize status field so that any backend field / casing differences
-          // (e.g. bookingStatus, status, etc.) are mapped into booking.status.
-          // Prefer bookingStatus if it exists, since some APIs expose that
-          // while also sending a stale "status" field.
           let normalized = bookings.map((b: any) => {
             const rawStatus = (b.bookingStatus ?? b.status ?? 'PENDING').toString();
+
             return {
               ...b,
               status: rawStatus.toUpperCase(),
             } as Booking;
           });
 
-          // Apply any local overrides that the admin dashboard might have
-          // written into localStorage when updating booking status.
           try {
             const rawOverrides = localStorage.getItem('bookingStatusOverrides');
             const overrides = rawOverrides ? JSON.parse(rawOverrides) : {};
+
             normalized = normalized.map((b: Booking) => {
               const override = overrides[(b as any).id];
+
               return override
                 ? { ...b, status: String(override).toUpperCase() }
                 : b;
             });
           } catch (e) {
-            console.error('Failed to read bookingStatusOverrides from localStorage', e);
+            console.error(
+              'Failed to read bookingStatusOverrides from localStorage',
+              e
+            );
           }
 
           this.userBookings = normalized;
           this.filterBookings();
         },
+
         error: (err) => {
           console.error('Error loading bookings:', err);
-          // For demo purposes, use empty array
           this.userBookings = [];
           this.filterBookings();
         }
@@ -168,94 +181,99 @@ export class Userlogincmp implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Periodically refresh user bookings so that any status change
-   * done by the admin (PENDING, ACCEPTED, COMPLETED, CANCELLED)
-   * is reflected automatically in the user dashboard.
-   */
-  private startBookingsPolling() {
+  private startBookingsPolling(): void {
     if (this.bookingsPollIntervalId) {
       clearInterval(this.bookingsPollIntervalId);
     }
-    // Refresh every 10 seconds; adjust as needed
+
     this.bookingsPollIntervalId = setInterval(() => {
       this.loadUserBookings();
     }, 10000);
   }
+
   getBookingStatus(booking: Booking): string {
-  return String(
-    (booking as any).bookingStatus ?? booking.status ?? 'PENDING'
-  )
-    .trim()
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-}
+    return String(
+      (booking as any).bookingStatus ?? booking.status ?? 'PENDING'
+    )
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_');
+  }
 
-getBookingStatusLabel(status: string): string {
-  const labels: { [key: string]: string } = {
-    PENDING: 'Booking Submitted',
-    ACCEPTED: 'Confirmed',
-    CONFIRMED: 'Confirmed',
-    IN_PROGRESS: 'Service In Progress',
-    COMPLETED: 'Completed',
-    CANCELLED: 'Cancelled',
-    REJECTED: 'Rejected'
-  };
+  getBookingStatusLabel(status: string): string {
+    const labels: { [key: string]: string } = {
+      PENDING: 'Booking Submitted',
+      ACCEPTED: 'Confirmed',
+      CONFIRMED: 'Confirmed',
+      IN_PROGRESS: 'Service In Progress',
+      COMPLETED: 'Completed',
+      CANCELLED: 'Cancelled',
+      REJECTED: 'Rejected'
+    };
 
-  return labels[status] || status.replace(/_/g, ' ');
-}
+    return labels[status] || status.replace(/_/g, ' ');
+  }
 
-getBookingProgress(status: string): number {
-  const progress: { [key: string]: number } = {
-    PENDING: 1,
-    ACCEPTED: 2,
-    CONFIRMED: 2,
-    IN_PROGRESS: 3,
-    COMPLETED: 4
-  };
+  getBookingProgress(status: string): number {
+    const progress: { [key: string]: number } = {
+      PENDING: 1,
+      ACCEPTED: 2,
+      CONFIRMED: 2,
+      IN_PROGRESS: 3,
+      COMPLETED: 4
+    };
 
-  return progress[status] || 0;
-}
+    return progress[status] || 0;
+  }
 
-isBookingStepComplete(status: string, step: number): boolean {
-  return this.getBookingProgress(status) >= step;
-}
-  filterBookings()
-   {
+  isBookingStepComplete(status: string, step: number): boolean {
+    return this.getBookingProgress(status) >= step;
+  }
+
+  filterBookings(): void {
     this.filteredBookings = this.userBookings.filter(booking => {
       const serviceName = booking.serviceType || booking.selectedServices || '';
-      const matchesService = this.selectedServiceFilter === 'All Services' ||
-                            serviceName === this.selectedServiceFilter;
-      const matchesStatus = this.selectedStatusFilter === 'All Statuses' ||
-                           booking.status === this.selectedStatusFilter;
-      const matchesSearch = !this.searchQuery ||
-                           (booking.customerName || booking.user?.fullName || '')
-                             .toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                           (booking.vehicleRegistrationNumber || booking.carModel || '')
-                             .toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                           serviceName.toLowerCase().includes(this.searchQuery.toLowerCase());
+
+      const matchesService =
+        this.selectedServiceFilter === 'All Services' ||
+        serviceName === this.selectedServiceFilter;
+
+      const matchesStatus =
+        this.selectedStatusFilter === 'All Statuses' ||
+        booking.status === this.selectedStatusFilter;
+
+      const matchesSearch =
+        !this.searchQuery ||
+        (booking.customerName || booking.user?.fullName || '')
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase()) ||
+        (booking.vehicleRegistrationNumber || booking.carModel || '')
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase()) ||
+        serviceName.toLowerCase().includes(this.searchQuery.toLowerCase());
+
       return matchesService && matchesStatus && matchesSearch;
     });
   }
 
-  onServiceChange() {
-    const selectedService = this.serviceOptions.find(s => s.name === this.booking.serviceType);
+  onServiceChange(): void {
+    const selectedService = this.serviceOptions.find(
+      s => s.name === this.booking.serviceType
+    );
+
     if (selectedService) {
       this.booking.serviceCharge = selectedService.basePrice;
     }
   }
 
-  onDateChange() {
+  onDateChange(): void {
     if (this.selectedDate) {
       this.booking.serviceBookingDate = this.selectedDate;
-      // Load available slots for the selected date
       this.loadAvailableSlots();
     }
   }
 
-  loadAvailableSlots() {
-    // In a real app, this would fetch from the backend
-    // For now, we'll use the default slots
+  loadAvailableSlots(): void {
     this.timeSlots = DEFAULT_TIME_SLOTS.map(slot => ({
       id: '',
       startTime: slot.startTime,
@@ -266,24 +284,34 @@ isBookingStepComplete(status: string, step: number): boolean {
     }));
   }
 
-  selectTimeSlot(slot: string) {
+  selectTimeSlot(slot: string): void {
     this.selectedTimeSlot = slot;
     this.booking.timeSlot = slot;
   }
 
-  submitBooking() {
-    if (!this.booking.customerName || !this.booking.customerMobile ||
-        !this.booking.vehicleMake || !this.booking.vehicleModel ||
-        !this.booking.vehicleRegistrationNumber || !this.booking.serviceType) {
+  submitBooking(): void {
+    if (
+      !this.booking.customerName ||
+      !this.booking.customerMobile ||
+      !this.booking.vehicleMake ||
+      !this.booking.vehicleModel ||
+      !this.booking.vehicleRegistrationNumber ||
+      !this.booking.serviceType
+    ) {
       this.showNotificationMessage('Please fill in all required fields.');
       return;
     }
 
-    // Validate mobile number: must be 10 digits and start with 6, 7, 8, or 9
-    const phoneDigits = this.booking.customerMobile ? this.booking.customerMobile.replace(/\D/g, '') : '';
+    const phoneDigits = this.booking.customerMobile
+      ? this.booking.customerMobile.replace(/\D/g, '')
+      : '';
+
     const phoneRegex = /^[6-9][0-9]{9}$/;
+
     if (!phoneRegex.test(phoneDigits)) {
-      this.showNotificationMessage('Mobile number must be 10 digits and start with 6, 7, 8, or 9.');
+      this.showNotificationMessage(
+        'Mobile number must be 10 digits and start with 6, 7, 8, or 9.'
+      );
       return;
     }
 
@@ -293,16 +321,16 @@ isBookingStepComplete(status: string, step: number): boolean {
     }
 
     if (!this.currentUser?.id) {
-      this.showNotificationMessage('Unable to create booking: missing user information. Please login again.');
+      this.showNotificationMessage(
+        'Unable to create booking: missing user information. Please login again.'
+      );
       return;
     }
 
-    // Keep local fields for UI
     this.booking.serviceBookingDate = this.selectedDate;
     this.booking.timeSlot = this.selectedTimeSlot;
     this.booking.userId = this.currentUser.id.toString();
 
-    // Map frontend fields to the backend DTO shape
     const payload = {
       carCompany: this.booking.vehicleMake,
       carModel: this.booking.vehicleModel,
@@ -313,26 +341,35 @@ isBookingStepComplete(status: string, step: number): boolean {
       status: 'PENDING'
     };
 
-    // Log the booking payload being sent to the backend
-    console.log('Submitting booking for user', this.currentUser.id, 'payload:', payload);
+    console.log(
+      'Submitting booking for user',
+      this.currentUser.id,
+      'payload:',
+      payload
+    );
 
     this.bookingService.createBooking(payload, this.currentUser.id).subscribe({
       next: (res) => {
         console.log('Create booking response:', res);
+
         this.showNotificationMessage('Booking created successfully!');
         this.showBookingSuccessModal = true;
+
         setTimeout(() => this.closeBookingSuccessModal(), 2500);
+
         this.initializeBooking();
         this.activeView = 'dashboard';
         this.loadUserBookings();
       },
+
       error: (err) => {
         console.error(
-          'Error creating booking (status, message, error body):',
+          'Error creating booking:',
           err?.status,
           err?.message,
           err?.error
         );
+
         this.showNotificationMessage(
           (err && err.error && (err.error.message || err.error.error)) ||
           err.message ||
@@ -342,65 +379,86 @@ isBookingStepComplete(status: string, step: number): boolean {
     });
   }
 
-  openFeedbackModal() {
+  // Feedback
+  openFeedbackModal(): void {
     this.feedback = {
       id: '',
       userId: this.currentUser?.id?.toString() || '',
-      userName: `${this.currentUser?.fullName} ${this.currentUser?.lastName}`,
+      userName: `${this.currentUser?.fullName || ''} ${this.currentUser?.lastName || ''}`.trim(),
       rating: 0,
       category: 'Other',
       comments: '',
       createdAt: new Date()
     };
+
     this.showFeedbackModal = true;
   }
 
-  closeFeedbackModal() {
+  closeFeedbackModal(): void {
     this.showFeedbackModal = false;
   }
 
-  setRating(rating: number) {
+  setRating(rating: number): void {
     this.feedback.rating = rating;
   }
 
-  submitFeedback() {
+  submitFeedback(): void {
     if (this.feedback.rating === 0) {
       this.showNotificationMessage('Please select a rating.');
       return;
     }
 
-    this.feedbackService.submitFeedback(this.feedback).subscribe({
-      next: () => {
-        this.showNotificationMessage('Thank you for your feedback!');
-        this.closeFeedbackModal();
-      },
-      error: (err) => {
-        console.error('Error submitting feedback:', err);
-        this.showNotificationMessage('Failed to submit feedback. Please try again.');
-      }
-    });
+    const userStr = localStorage.getItem('user');
+
+    if (!userStr) {
+      this.showNotificationMessage('Please login first.');
+      return;
+    }
+
+    const currentUser = JSON.parse(userStr);
+
+    if (!currentUser.id) {
+      console.error('User ID is missing:', currentUser);
+
+      this.showNotificationMessage(
+        'User information is missing. Please login again.'
+      );
+      return;
+    }
+
+    this.feedback.userId = String(currentUser.id);
+
+    this.feedbackService
+      .submitFeedback(this.feedback, String(currentUser.id))
+      .subscribe({
+        next: (response) => {
+          console.log('Feedback submitted successfully:', response);
+
+          this.showNotificationMessage('Thank you for your feedback!');
+          this.closeFeedbackModal();
+        },
+
+        error: (err) => {
+          console.error('Error submitting feedback:', err);
+
+          this.showNotificationMessage(
+            'Failed to submit feedback. Please try again.'
+          );
+        }
+      });
   }
 
-  showNotificationMessage(message: string) {
-    this.notificationMessage = message;
-    this.showNotification = true;
-    setTimeout(() => {
-      this.showNotification = false;
-    }, 3000);
-  }
-
-  toggleDarkMode() {
+  toggleDarkMode(): void {
     this.darkMode = !this.darkMode;
     document.body.classList.toggle('dark-mode', this.darkMode);
   }
 
-  closeBookingSuccessModal() {
+  closeBookingSuccessModal(): void {
     this.showBookingSuccessModal = false;
-    // Refresh bookings when modal closes
     this.loadUserBookings();
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('admin');
     this.router.navigateByUrl('/');
